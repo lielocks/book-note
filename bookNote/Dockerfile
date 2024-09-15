@@ -1,4 +1,4 @@
-FROM gradle:7.4-jdk21-alpine as builder
+FROM gradle:8.3-jdk21 as builder
 WORKDIR /build
 
 # gradle 파일이 변경되었을 때만 새롭게 의존패키지 다운로드 받게함
