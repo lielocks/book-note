@@ -1,0 +1,47 @@
+server:
+  port: 8080
+  ssl:
+    enabled: false
+spring:
+  redis:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
+
+  graphql:
+    graphiql:
+      enabled: true
+    schema:
+      printer:
+        enabled: true
+      locations: classpath:graphql/**/
+
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+    hibernate:
+      ddl-auto: none
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${POSTGRESQL_URL}
+    username: ${POSTGRESQL_USERNAME}
+    password: ${POSTGRESQL_PASSWORD}
+
+jwt:
+  accessToken:
+    secretKey: ${JWT_ACCESS_KEY}
+  refreshToken:
+    secretKey: ${JWT_REFRESH_KEY}
+
+kakao:
+  url:
+    token: ${KAKAO_TOKEN_URL}
+    profile: ${KAKAO_PROFILE_URL}
+    clientId : ${KAKAO_CLIENT_ID}
+    redirectUrl : ${KAKAO_REDIRECT_URL}
+    clientSecret : ${KAKAO_CLIENT_SECRET}
+
+naver:
+  clientId: ${NAVER_CLIENT_ID}
+  secret: ${NAVER_SECRET}
