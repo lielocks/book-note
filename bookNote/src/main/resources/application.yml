@@ -3,9 +3,10 @@ server:
   ssl:
     enabled: false
 spring:
-  redis:
-    host: ${REDIS_HOST}
-    port: 6379
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
 
   graphql:
     graphiql:
