@@ -1,6 +1,10 @@
 FROM gradle:8.4.0-jdk21 as builder
 WORKDIR /build
 
+FROM redis:latest
+COPY ./redis.conf /usr/local/etc/redis/redis.conf
+CMD ["redis-server", "/usr/local/etc/redis/redis.conf"]
+
 # gradle 파일이 변경되었을 때만 새롭게 의존패키지 다운로드 받게함
 COPY build.gradle settings.gradle /build/
 RUN gradle build -x test --parallel --continue > /dev/null 2>&1 || true
