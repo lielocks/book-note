@@ -19,7 +19,7 @@ public class RedisConfig {
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         try {
-            System.out.println("Attempting to connect to Redis host : " + properties.getHost() + "port : " + properties.getPort() );
+            System.out.println("Attempting to connect to Redis host : " + properties.getHost() + " port : " + properties.getPort() );
         } catch (Exception e) {
             System.err.println("Error connecting to Redis: " + e.getMessage());
             e.printStackTrace();
