@@ -23,11 +23,13 @@ jobs:
 
     # Gradle Build를 위한 권한 부여
     - name: Grant execute permission for gradlew
-      run: chmod +x bookNote/gradlew
+      run: chmod +x gradlew
+      working-directory: bookNote
 
     # Gradle Build (test 제외)
     - name: Build with Gradle
       run: ./gradlew clean build --exclude-task test
+      working-directory: bookNote
       
     # DockerHub 로그인
     - name: DockerHub Login
