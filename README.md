@@ -33,6 +33,12 @@ http://ec2-13-124-143-107.ap-northeast-2.compute.amazonaws.com:8080/graphiql?pat
 
 <br>
 
+![image](https://github.com/user-attachments/assets/0692a00b-0e28-4975-b1c1-06eb7d44873b)
+
+*모든 mutation 과 query 실행 전 `Authorization header` 에 access token 설정해주세요*
+
+<br>
+
 
 > mutation {  
 >   fetchAndSaveBook(isbn: "9791161752624") {  
