@@ -1,6 +1,8 @@
 ## Naver open API 를 통한 책 검색 및 저장, 외부 공유가 가능하고 저장된 책에 대한 노트 작성 및 해당 노트 공유 서비스
 
--PostgreSQL 15
+-PostgreSQL 15 (docker image port 5432)
+
+-Redis (docker image port 6379)
 
 -Spring Boot 3.3.3
 
@@ -12,11 +14,11 @@
 
 -Github Action CI/CD
 
--Naver 책검색 API
+-Naver 책검색 Open API
 
 -JWT 토큰을 사용해 저장한 책 정보를 외부 공유할 수 있는 기능
 - 공유를 통해 타 사용자/비로그인 사용자는 공유자가 저장한 책 정보 및 해당 책에 공유자가 작성한 노트를 열람할 수 있습니다.
-- 열람 만료 기한은 공유 시점으로부터 10분 후 입니다.
+- 열람 만료 기한은 공유 시점으로부터 10분 후
 
 -노트 삭제 soft delete, hard delete 
 
