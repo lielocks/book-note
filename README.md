@@ -106,6 +106,19 @@ http://ec2-13-124-143-107.ap-northeast-2.compute.amazonaws.com:8088/graphiql?pat
 >   }  
 > }
 
+> query {  
+> getUserBookList {  
+> id  
+> title  
+> link  
+> author  
+> discount  
+> publisher  
+> pubdate  
+> isbn  
+> description  
+> }  
+> }  
 <br>
 
 **Rest API**
