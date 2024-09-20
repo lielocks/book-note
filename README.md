@@ -81,15 +81,19 @@ http://ec2-13-124-143-107.ap-northeast-2.compute.amazonaws.com:8088/graphiql?pat
 > }  
 
 > mutation {  
->   softDeleteNote(noteId: 3) {  
->     noteId  
->     content  
->     isDeleted  
->     createdAt  
->     updatedAt  
->     bookId  
->   }  
-> }  
+>  softDeleteNote(NoteSoftDeleteDto: {  
+>    userId: 1,  
+>    noteId: 2,  
+>    deleted: true  
+>  }) {  
+>    noteId  
+>    content  
+>    isDeleted  
+>    createdAt  
+>    updatedAt  
+>    bookId  
+>  }  
+> }    
 
 > mutation {  
 >   hardDeleteNote(noteId: 2)  
@@ -106,6 +110,19 @@ http://ec2-13-124-143-107.ap-northeast-2.compute.amazonaws.com:8088/graphiql?pat
 >   }  
 > }
 
+> query {  
+> getUserBookList {  
+> id  
+> title  
+> link  
+> author  
+> discount  
+> publisher  
+> pubdate  
+> isbn  
+> description  
+> }  
+> }  
 <br>
 
 **Rest API**
