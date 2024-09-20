@@ -29,7 +29,7 @@
 
 **GraphQL path :**
 
-http://ec2-13-124-143-107.ap-northeast-2.compute.amazonaws.com:8080/graphiql?path=/graphql
+http://ec2-13-124-143-107.ap-northeast-2.compute.amazonaws.com:8088/graphiql?path=/graphql
 
 <br>
 
