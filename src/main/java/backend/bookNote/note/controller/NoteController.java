@@ -3,6 +3,7 @@ package backend.bookNote.note.controller;
 import backend.bookNote.auth.model.UserCustom;
 import backend.bookNote.note.dto.NoteRegisterRequestDto;
 import backend.bookNote.note.dto.NoteResponseDto;
+import backend.bookNote.note.dto.NoteSoftDeleteDto;
 import backend.bookNote.note.dto.NoteUpdateRequestDto;
 import backend.bookNote.note.service.NoteService;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +34,8 @@ public class NoteController {
     }
 
     @MutationMapping(name = "softDeleteNote")
-    public NoteResponseDto softDeleteNote(@AuthenticationPrincipal UserCustom userCustom, @Argument Long noteId) {
-        return noteService.softDeleteNote(userCustom.getId(), noteId);
+    public NoteResponseDto softDeleteNote(@AuthenticationPrincipal UserCustom userCustom, @Argument("NoteSoftDeleteDto") NoteSoftDeleteDto requestDto) {
+        return noteService.softDeleteNote(userCustom.getId(), requestDto);
     }
 
     @MutationMapping(name = "hardDeleteNote")

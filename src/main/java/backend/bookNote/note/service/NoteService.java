@@ -7,6 +7,7 @@ import backend.bookNote.common.exception.CustomException;
 import backend.bookNote.note.domain.Note;
 import backend.bookNote.note.dto.NoteRegisterRequestDto;
 import backend.bookNote.note.dto.NoteResponseDto;
+import backend.bookNote.note.dto.NoteSoftDeleteDto;
 import backend.bookNote.note.dto.NoteUpdateRequestDto;
 import backend.bookNote.note.repository.NoteRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,13 +41,7 @@ public class NoteService {
 
     @Transactional
     public NoteResponseDto updateNoteContent(Long userId, NoteUpdateRequestDto requestDto) {
-
-        Note note = noteRepository.findById(requestDto.getNoteId())
-                .orElseThrow(() -> new CustomException(CustomError.NOTE_NOT_FOUND));
-
-        if (!userId.equals(note.getUserBook().getUser().getUserId())) {
-            throw new CustomException(CustomError.ACCESS_TOKEN_INVALID);
-        }
+        Note note = findNoteAndValidateUser(requestDto.getNoteId(), userId);
         note.updateContent(requestDto.getContent());
 
         noteRepository.save(note);
@@ -54,38 +49,26 @@ public class NoteService {
         return note.toResponseDto();
     }
 
-    /**
-     * soft delete
-     * @param userId
-     * @param noteId
-     * @return
-     */
     @Transactional
-    public NoteResponseDto softDeleteNote(Long userId, Long noteId) {
-        Note note = noteRepository.findById(noteId)
+    public NoteResponseDto softDeleteNote(Long userId, NoteSoftDeleteDto softDeleteDto) {
+        Note note = noteRepository.findByIdIncludingDeleted(softDeleteDto.getNoteId())
                 .orElseThrow(() -> new CustomException(CustomError.NOTE_NOT_FOUND));
-        if (!userId.equals(note.getUserBook().getUser().getUserId())) {
-            throw new CustomException(CustomError.ACCESS_TOKEN_INVALID);
-        }
-        note.setIsDeleted();
+        validateUserAccess(note, userId);
+
+        note.setIsDeleted(softDeleteDto.isDeleted());
         noteRepository.save(note);
+
         return note.toResponseDto();
     }
 
-    /**
-     * hard delete 영구 삭제
-     * @param noteId
-     */
+
     @Transactional
     public String hardDeleteNote(Long userId, Long noteId) {
-
         Note note = noteRepository.findByIdIncludingDeleted(noteId)
                 .orElseThrow(() -> new CustomException(CustomError.NOTE_NOT_FOUND));
-        if (!userId.equals(note.getUserBook().getUser().getUserId())) {
-            throw new CustomException(CustomError.ACCESS_TOKEN_INVALID);
-        }
+        validateUserAccess(note, userId);
 
-        // 이미 Soft Delete 된 데이터만 삭제할 수 있도록 확인
+        // Soft delete된 데이터만 삭제
         if (Boolean.FALSE.equals(note.getIsDeleted())) {
             throw new CustomException(CustomError.CANNOT_DELETE_ACTIVE_NOTE);
         }
@@ -102,4 +85,21 @@ public class NoteService {
                 .toList();
     }
 
+    private Note findNoteAndValidateUser(Long noteId, Long userId) {
+        Note note = noteRepository.findById(noteId)
+                .orElseThrow(() -> new CustomException(CustomError.NOTE_NOT_FOUND));
+        validateUserAccess(note, userId);
+        return note;
+    }
+
+    /**
+     * 사용자 권한 검증 체크
+     * @param note
+     * @param userId
+     */
+    private void validateUserAccess(Note note, Long userId) {
+        if (!userId.equals(note.getUserBook().getUser().getUserId())) {
+            throw new CustomException(CustomError.ACCESS_TOKEN_INVALID);
+        }
+    }
 }

@@ -5,6 +5,7 @@ import backend.bookNote.auth.token.ShareToken;
 import backend.bookNote.book.domain.Book;
 import backend.bookNote.book.domain.UserBook;
 import backend.bookNote.book.dto.BookListResponseDto;
+import backend.bookNote.book.dto.UserBookListResponseDto;
 import backend.bookNote.book.dto.UserLikeBookDto;
 import backend.bookNote.book.repository.BookRepository;
 import backend.bookNote.book.repository.UserBookRepository;
@@ -139,5 +140,15 @@ public class BookService {
         return shareToken.getToken();
     }
 
+    @Transactional(readOnly = true)
+    public List<UserBookListResponseDto> getUserBookList(Long userId) {
+        List<UserBook> userBookList = userBookRepository.findUserBooksByUser(userId);
 
+        return userBookList.stream()
+                .map(userBook -> {
+                    Book book = userBook.getBook();
+                    return book.toUserBookListDto();
+                })
+                .toList();
+    }
 }

@@ -30,7 +30,8 @@ public class Note extends BaseTimeEntity {
     @Column(length = 1000)
     private String content;
 
-    private Boolean isDeleted = false; // Soft delete 플래그
+    @Column(name = "is_deleted")
+    private Boolean isDeleted; // Soft delete 플래그
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
@@ -49,7 +50,7 @@ public class Note extends BaseTimeEntity {
         this.content = content;
     }
 
-    public void setIsDeleted() {
-        this.isDeleted = true;
+    public void setIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 }

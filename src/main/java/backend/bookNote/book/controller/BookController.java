@@ -3,13 +3,16 @@ package backend.bookNote.book.controller;
 import backend.bookNote.auth.model.UserCustom;
 import backend.bookNote.book.domain.Book;
 import backend.bookNote.book.dto.BookListResponseDto;
+import backend.bookNote.book.dto.UserBookListResponseDto;
 import backend.bookNote.book.dto.UserLikeBookDto;
 import backend.bookNote.book.service.BookService;
 import backend.bookNote.book.service.NaverSearchService;
 import backend.bookNote.book.vo.NaverResultVO;
+import backend.bookNote.note.dto.NoteResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
+import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,4 +51,8 @@ public class BookController {
         return bookService.validateShareToken(token);
     }
 
+    @QueryMapping(name = "getUserBookList")
+    public List<UserBookListResponseDto> getUserBookList(@AuthenticationPrincipal UserCustom userCustom) {
+        return bookService.getUserBookList(userCustom.getId());
+    }
 }

@@ -5,6 +5,7 @@ schema {
 
 type Query {
     getNoteListByUserId: [NoteResponseDto!]!
+    getUserBookList: [UserBookListResponseDto!]!
 }
 
 type Mutation {
@@ -12,7 +13,7 @@ type Mutation {
     userLikeBook(UserLikeBookInput: UserLikeBookInput!): String
     registerNote(NoteRegisterInput: NoteRegisterInput!): NoteResponseDto
     updateNote(NoteUpdateInput: NoteUpdateInput!): NoteResponseDto
-    softDeleteNote(noteId: Int!): NoteResponseDto
+    softDeleteNote(NoteSoftDeleteDto: NoteSoftDeleteDto!): NoteResponseDto
     hardDeleteNote(noteId: Int!): String
 }
 
@@ -33,6 +34,12 @@ input UserLikeBookInput {
     bookId: Int!
 }
 
+input NoteSoftDeleteDto {
+    userId: Int!,
+    noteId: Int!,
+    deleted: Boolean!
+}
+
 input NoteRegisterInput {
     bookId: Int!,
     content: String!
@@ -50,4 +57,16 @@ type NoteResponseDto {
 input NoteUpdateInput {
     noteId: Int!
     content: String!
+}
+
+type UserBookListResponseDto {
+    id: Int!
+    title: String!
+    link: String
+    author: String!
+    discount: String
+    publisher: String!
+    pubdate: String
+    isbn: String!
+    description: String
 }

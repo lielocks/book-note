@@ -1,6 +1,7 @@
 package backend.bookNote.book.domain;
 
 import backend.bookNote.book.dto.BookListResponseDto;
+import backend.bookNote.book.dto.UserBookListResponseDto;
 import backend.bookNote.note.domain.Note;
 import jakarta.persistence.*;
 import lombok.*;
@@ -43,6 +44,20 @@ public class Book {
                 .discount(discount)
                 .publisher(publisher)
                 .noteContents(noteContents)
+                .build();
+    }
+
+    public UserBookListResponseDto toUserBookListDto() {
+        return UserBookListResponseDto.builder()
+                .id(id)
+                .title(title)
+                .author(author)
+                .link(link)
+                .pubdate(pubdate)
+                .discount(discount)
+                .publisher(publisher)
+                .description(description)
+                .isbn(isbn)
                 .build();
     }
 }
