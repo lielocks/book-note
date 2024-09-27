@@ -1,5 +1,11 @@
 ## Naver open API 를 통한 책 검색 및 저장, 외부 공유가 가능하고 저장된 책에 대한 노트 작성 및 해당 노트 공유 서비스
 
+http://ec2-13-124-143-107.ap-northeast-2.compute.amazonaws.com:8088/swagger-ui/index.html 
+
+에서 Swagger API 명세서를 확인하실 수 있습니다.
+
+--- 
+
 -PostgreSQL 15 (docker image port 5432)
 
 -Redis (docker image port 6379)
