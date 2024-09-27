@@ -2,6 +2,7 @@ package backend.bookNote.note.service;
 
 import backend.bookNote.book.domain.UserBook;
 import backend.bookNote.book.repository.UserBookRepository;
+import backend.bookNote.common.annotation.ValidateUserAccess;
 import backend.bookNote.common.exception.CustomError;
 import backend.bookNote.common.exception.CustomException;
 import backend.bookNote.note.domain.Note;
@@ -49,11 +50,11 @@ public class NoteService {
         return note.toResponseDto();
     }
 
+    @ValidateUserAccess
     @Transactional
-    public NoteResponseDto softDeleteNote(Long userId, NoteSoftDeleteDto softDeleteDto) {
+    public NoteResponseDto softDeleteNote(NoteSoftDeleteDto softDeleteDto) {
         Note note = noteRepository.findByIdIncludingDeleted(softDeleteDto.getNoteId())
                 .orElseThrow(() -> new CustomException(CustomError.NOTE_NOT_FOUND));
-        validateUserAccess(note, userId);
 
         note.setIsDeleted(softDeleteDto.isDeleted());
         noteRepository.save(note);

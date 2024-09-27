@@ -34,8 +34,8 @@ public class NoteController {
     }
 
     @MutationMapping(name = "softDeleteNote")
-    public NoteResponseDto softDeleteNote(@AuthenticationPrincipal UserCustom userCustom, @Argument("NoteSoftDeleteDto") NoteSoftDeleteDto requestDto) {
-        return noteService.softDeleteNote(userCustom.getId(), requestDto);
+    public NoteResponseDto softDeleteNote(@Argument("NoteSoftDeleteDto") NoteSoftDeleteDto requestDto) {
+        return noteService.softDeleteNote(requestDto);
     }
 
     @MutationMapping(name = "hardDeleteNote")
