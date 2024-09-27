@@ -11,6 +11,7 @@ import backend.bookNote.book.repository.BookRepository;
 import backend.bookNote.book.repository.UserBookRepository;
 import backend.bookNote.book.vo.BookVO;
 import backend.bookNote.book.vo.NaverResultVO;
+import backend.bookNote.common.annotation.ValidateUserAccess;
 import backend.bookNote.common.exception.CustomError;
 import backend.bookNote.common.exception.CustomException;
 import backend.bookNote.note.domain.Note;
@@ -108,11 +109,9 @@ public class BookService {
         else throw new CustomException(CustomError.BOOK_NOT_FOUND);
     }
 
+    @ValidateUserAccess
     @Transactional
-    public String userBookLike(Long userId, UserLikeBookDto userLikeBookDto) {
-        if (!userId.equals(userLikeBookDto.getUserId())) {
-            throw new CustomException(CustomError.ACCESS_TOKEN_INVALID);
-        }
+    public String userBookLike(UserLikeBookDto userLikeBookDto) {
         UserBook userBook = userBookRepository.findByBookIdAndUserId(userLikeBookDto.getBookId(), userLikeBookDto.getUserId())
                 .orElseThrow(() -> new CustomException(CustomError.USERBOOK_NOT_FOUND));
 

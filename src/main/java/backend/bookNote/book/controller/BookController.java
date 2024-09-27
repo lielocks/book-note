@@ -8,7 +8,6 @@ import backend.bookNote.book.dto.UserLikeBookDto;
 import backend.bookNote.book.service.BookService;
 import backend.bookNote.book.service.NaverSearchService;
 import backend.bookNote.book.vo.NaverResultVO;
-import backend.bookNote.note.dto.NoteResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -37,8 +36,8 @@ public class BookController {
     }
 
     @MutationMapping(name = "userLikeBook")
-    public String userLikeBook(@AuthenticationPrincipal UserCustom userCustom, @Argument(name = "UserLikeBookInput") UserLikeBookDto userLikeBookDto) {
-        return bookService.userBookLike(userCustom.getId(), userLikeBookDto);
+    public String userLikeBook(@Argument(name = "UserLikeBookInput") UserLikeBookDto userLikeBookDto) {
+        return bookService.userBookLike(userLikeBookDto);
     }
 
     @PostMapping("/share")

@@ -1,5 +1,6 @@
 package backend.bookNote.note.dto;
 
+import backend.bookNote.common.asepct.HasUserId;
 import lombok.*;
 
 @Builder
@@ -7,8 +8,13 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
-public class NoteSoftDeleteDto {
+public class NoteSoftDeleteDto implements HasUserId {
     private Long userId;
     private Long noteId;
     private boolean deleted;
+
+    @Override
+    public Long getUserId() {
+        return userId;
+    }
 }
