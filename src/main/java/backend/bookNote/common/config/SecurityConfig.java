@@ -25,7 +25,8 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/auth/**", "/api/book/search", "/graphiql/**", "/graphql/**", "/api/book/valid").permitAll()
+                        .requestMatchers("/auth/**", "/api/book/search", "/graphiql/**", "/graphql/**", "/api/book/valid"
+                                , "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()  // 그 외 요청은 인증 필요
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
