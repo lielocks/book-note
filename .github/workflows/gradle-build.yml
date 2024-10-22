@@ -1,76 +1,64 @@
-name: Spring Boot CI/CD with Gradle
+name: Deploy to Production
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+    branches:
+      - master
 
 jobs:
-  build:
-
+  deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up JDK 21
-      uses: actions/setup-java@v3
-      with:
-        java-version: '21'
-        distribution: 'temurin'
+      - name: Checkout source code
+        uses: actions/checkout@master
 
-    # Gradle Build를 위한 권한 부여
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
 
-    # Gradle Build (test 제외)
-    - name: Build with Gradle
-      run: ./gradlew clean build --exclude-task test
-      
-    # DockerHub 로그인
-    - name: DockerHub Login
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_PASSWORD }}
-    # Docker 이미지 빌드
-    - name: Docker Image Build
-      run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }} .
+      - name: Gradle Caching
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
-    # DockerHub Push
-    - name: DockerHub Push
-      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
+      - name: Make application.yml
+        run: |
+          cd ./src/main
+          mkdir resources
+          cd ./resources
+          touch ./application.yml
+          echo "${{ secrets.APPLICATION }}" > ./application.yml
+        shell: bash
+        
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
-    # EC2 인스턴스 접속 및 애플리케이션 실행
-    - name: Application Run
-      uses: appleboy/ssh-action@v0.1.6
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USERNAME }}
-        key: ${{ secrets.EC2_KEY }}
-
-        script: |
-          sudo docker kill ${{ secrets.PROJECT_NAME }}
-          sudo docker rm -f ${{ secrets.PROJECT_NAME }}
-          sudo docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
-          sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
-
-          sudo docker run -p 8088:8088 \
-          --name ${{ secrets.PROJECT_NAME }} \
-          -e SPRING_DATASOURCE_URL=${{ secrets.POSTGRESQL_URL }} \
-          -e SPRING_DATASOURCE_USERNAME=${{ secrets.POSTGRESQL_USERNAME }} \
-          -e SPRING_DATASOURCE_PASSWORD=${{ secrets.POSTGRESQL_PASSWORD }} \
-          -e SPRING_REDIS_HOST=${{ secrets.REDIS_HOST }} \
-          -e SPRING_REDIS_PORT=${{ secrets.REDIS_PORT }} \
-          -e JWT_ACCESS_KEY=${{ secrets.JWT_ACCESS_KEY }} \
-          -e JWT_REFRESH_KEY=${{ secrets.JWT_REFRESH_KEY }} \
-          -e KAKAO_TOKEN_URL=${{ secrets.KAKAO_TOKEN_URL }} \
-          -e KAKAO_PROFILE_URL=${{ secrets.KAKAO_PROFILE_URL }} \
-          -e KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }} \
-          -e KAKAO_REDIRECT_URL=${{ secrets.KAKAO_REDIRECT_URL }} \
-          -e KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }} \
-          -e NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }} \
-          -e NAVER_SECRET=${{ secrets.NAVER_SECRET }} \
-          -d ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
+      - name: Build with Gradle
+        run: ./gradlew build
+        
+      - name: Make zip file
+        run: |
+          mkdir deploy
+          cp ./build/libs/*.jar ./deploy/
+          zip -r -qq -j ./spring-build.zip ./deploy
+          
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+        
+      - name: Upload to S3
+        run: |
+          aws s3 cp \
+            --region ap-northeast-2 \
+            ./spring-build.zip s3://spring-book-bucket
