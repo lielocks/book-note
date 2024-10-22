@@ -1,26 +1,10 @@
-FROM gradle:8.4.0-jdk21 as builder
-WORKDIR /build
+FROM openjdk:21
 
-# gradle 파일이 변경되었을 때만 새롭게 의존패키지 다운로드 받게함
-COPY build.gradle settings.gradle /build/
-RUN gradle build -x test --parallel --continue > /dev/null 2>&1 || true
+# 작업 디렉토리 설정
+WORKDIR /bookNote
 
-COPY . /build
-RUN gradle build -x test --parallel
+# 빌드된 JAR 파일을 컨테이너에 복사
+COPY bookNote-0.0.1-SNAPSHOT.jar app.jar 
 
-FROM openjdk:21-slim
-WORKDIR /app
-
-COPY --from=builder /build/build/libs/bookNote-0.0.1-SNAPSHOT.jar .
-
-EXPOSE 8080
-
-USER nobody
-
-ENTRYPOINT [ \
-   "java", \
-   "-jar", \
-   "-Djava.security.egd=file:/dev/./urandom", \
-   "-Dsun.net.inetaddr.ttl=0", \
-   "bookNote-0.0.1-SNAPSHOT.jar" \
-]
+# JAR 파일 실행
+ENTRYPOINT ["java", "-jar", "app.jar"]
