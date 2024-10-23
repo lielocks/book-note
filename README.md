@@ -1,5 +1,7 @@
 ## Naver open API 를 통한 책 검색 및 저장, 외부 공유가 가능하고 저장된 책에 대한 노트 작성 및 해당 노트 공유 서비스
 
+![image](https://github.com/user-attachments/assets/b2ae9d68-f131-456a-8be9-47adce400a21)
+
 https://api.my-book-note-spring.link/swagger-ui/index.html
 
 에서 Swagger API 명세서를 확인하실 수 있습니다.
